@@ -132,7 +132,7 @@ function emitToPortSockets(port, evt, obj) {
 }
 function mapChiffre(x, in_min,in_max, out_min, out_max)
 {
-console.log("vraie : "+x);
+//console.log("vraie : "+x);
   valeur= (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
   if (valeur<out_min){
   valeur=out_min;
