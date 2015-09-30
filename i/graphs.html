@@ -1,0 +1,230 @@
+<!--
+
+    GRBLWeb - a web based CNC controller for GRBL
+    Copyright (C) 2015 Andrew Hodel
+
+    THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+    WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+    MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+    ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+    WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+    ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published by
+    the Free Software Foundation, either version 3 of the License.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="">
+<meta name="author" content="">
+
+<title>GRBLWeb - a web based CNC controller for GRBL</title>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="jquery.min.js"></script>
+<script src="bootstrap.min.js"></script>
+<script src="main.js"></script>
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="http://code.highcharts.com/modules/exporting.js"></script>
+<script type="text/javascript">
+	window.onload = function () {
+
+		var dps = []; // dataPoints
+
+		var chart = new CanvasJS.Chart("chartContainer",{
+			title :{
+				text: "Live Random Data"
+			},			
+			data: [{
+				type: "line",
+				dataPoints: dps 
+			}]
+		});
+
+		var xVal = 0;
+		var yVal = 100;	
+		var updateInterval = 100;
+		var dataLength = 500; // number of dataPoints visible at any point
+
+		var updateChart = function (count) {
+			count = count || 1;
+			// count is number of times loop runs to generate random dataPoints.
+			
+			for (var j = 0; j < count; j++) {	
+ 				yVal = yVal +  Math.round(5 + Math.random() *(-5-5));
+ 				dps.push({
+ 					x: xVal,
+ 					y: olivier2
+ 				});
+ 				xVal++;
+ 			};
+ 			if (dps.length > dataLength)
+			{
+				dps.shift();				
+			}
+			
+			chart.render();		
+
+		};
+
+		// generates first set of dataPoints
+		updateChart(dataLength); 
+
+		// update chart after specified time. 
+		setInterval(function(){updateChart()}, updateInterval); 
+
+	}
+	</script>
+	<script type="text/javascript" src="canvasjs.min.js"></script>
+    <!-- v68 Three.js -->
+    <script src="gcode-viewer/Three.js"></script>
+    <script src="gcode-viewer/TrackballControls.js"></script>
+    <script src="gcode-viewer/gcode-parser.js"></script>
+    <script src="gcode-viewer/gcode-model.js"></script>
+    <script src="gcode-viewer/renderer.js"></script>
+    <script src="gcode-viewer/ui.js"></script>
+
+<link rel="stylesheet" href="bootstrap.min.css">
+<link rel="stylesheet" href="bootstrap-theme.min.css">
+<link rel="stylesheet" href="dashboard.css">
+
+<style type="text/css">
+.table-layout {
+    display:table;
+    width:100%;
+    margin-top: 20px;
+}
+.table-layout .table-cell {
+    display:table-cell;
+    vertical-align: top;
+    padding: 10px;
+}
+
+.fixed-width-cell {
+    width:250px;
+}
+.btn-file {
+    position: relative;
+    overflow: hidden;
+}
+.btn-file input[type=file] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 100%;
+    min-height: 100%;
+    font-size: 100px;
+    text-align: right;
+    filter: alpha(opacity=0);
+    opacity: 0;
+    outline: none;
+    background: white;
+    cursor: inherit;
+    display: block;
+}
+
+#renderArea {
+    background-color: #ffffff;
+    width: 49%;
+    height: 300px;
+    border: 1px solid #333;
+    float: left;
+    margin-right: 1%;
+}
+
+#console {
+    float: left;
+    height: 300px;
+    width: 49%;
+    overflow: auto;
+    text-align: left;
+    background-color: #ddd;
+    padding: 10px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container-fluid">
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+
+
+          </ul>
+        </div>
+      </div>
+    </div>
+
+<!--
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+-->
+    <div class="container-fluid">
+      <div class="table-layout">
+        <div class="table-cell fixed-width-cell">
+
+<pre id="console"></pre>
+<br />
+
+<div id="webcam" style="float; left; display: none;">
+<img id="wcImg" width="320" height="240" />
+<br />
+<a id="wcLink" target="_blank" href="#">Webcam</a>
+</div>
+
+<div style="float: right;">
+<textarea style="height: 300px; width: 500px; overflow: auto; border: 2px solid orange;" id="command"></textarea>
+</div>
+
+<div style="float: right; clear: both;">
+<span style="font-style: italic;">Drag a .gcode or .nc file to the command box or click Upload GCODE to upload it.</span>
+</div>
+
+<div class="input-group" style="clear: both; width: 300px; float: right; text-align: right; margin-top: 10px;">
+<span class="input-group-btn">
+<button type="button" class="btn btn-default disabled" id="qStatus">0/0</button>
+<button type="button" class="btn btn-default" id="pause">Pause</button>
+<button type="button" class="btn btn-default disabled" id="clearQ">Clear Queue</button>
+</span>
+</div><!-- /input-group -->
+
+<div style="clear: both; float: right; margin-top: 10px;">
+<span class="btn btn-default btn-file">Upload GCODE <input type="file" id="fileInput" /></span>
+<button type="button" class="btn btn-default" id="sendCommand">Send to CNC (shift+enter)</button>
+</div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+<div id="chartContainer" style="height: 300px; width:100%;">
+	</div>
+
+
+
+
+</body>
+</html>

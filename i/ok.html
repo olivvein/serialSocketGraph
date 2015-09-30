@@ -1,0 +1,92 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="jquery.min.js"></script>
+<script src="bootstrap.min.js"></script>
+<script src="main2.js"></script>
+
+    <!-- v68 Three.js -->
+    <script src="gcode-viewer/Three.js"></script>
+    <script src="gcode-viewer/TrackballControls.js"></script>
+    <script src="gcode-viewer/gcode-parser.js"></script>
+    <script src="gcode-viewer/gcode-model.js"></script>
+    <script src="gcode-viewer/renderer.js"></script>
+    <script src="gcode-viewer/ui.js"></script>
+
+<link rel="stylesheet" href="bootstrap.min.css">
+<link rel="stylesheet" href="bootstrap-theme.min.css">
+<link rel="stylesheet" href="dashboard.css">
+<style>
+#console {
+    float: left;
+    height: 300px;
+    width: 49%;
+    overflow: auto;
+    text-align: left;
+    background-color: #ddd;
+    padding: 10px;
+}
+</style>
+
+
+	<script type="text/javascript">
+	window.onload = function () {
+
+		var dps = []; // dataPoints
+		var olivier="salut";
+		var chart = new CanvasJS.Chart("chartContainer",{
+			title :{
+				text: "Live Random Data"
+			},			
+			data: [{
+				type: "line",
+				dataPoints: dps 
+			}]
+		});
+
+		var xVal = 0;
+		var yVal = 100;	
+		var updateInterval = 100;
+		var dataLength = 500; // number of dataPoints visible at any point
+
+		var updateChart = function (count) {
+			count = count || 1;
+			// count is number of times loop runs to generate random dataPoints.
+			
+			for (var j = 0; j < count; j++) {	
+ 				yVal = yVal +  Math.round(5 + Math.random() *(-5-5));
+ 				dps.push({
+ 					x: xVal,
+ 					y: yVal
+ 				});
+ 				xVal++;
+ 			};
+ 			if (dps.length > dataLength)
+			{
+				dps.shift();				
+			}
+			
+			chart.render();		
+
+		};
+
+		// generates first set of dataPoints
+		updateChart(dataLength); 
+
+		// update chart after specified time. 
+		setInterval(function(){updateChart()}, updateInterval); 
+
+	}
+	</script>
+	<script type="text/javascript" src="canvasjs.min.js"></script>
+</head>
+<body>
+	<div id="chartContainer" style="height: 300px; width:100%;">
+	</div>
+<pre id="console"></pre>
+</body>
+</html>

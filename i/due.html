@@ -1,0 +1,133 @@
+
+<html>
+<head>
+<script src="/socket.io/socket.io.js"></script>
+<script src="jquery.min.js"></script>
+<script src="bootstrap.min.js"></script>
+
+<script src="graph.js"></script>
+<style>
+#choosePort{
+visibility:hidden;
+}
+</style>
+</head>
+<body>
+<p>
+<select id="choosePort" class="form-control">
+<option val="no">Select a serial port</option>
+</select>
+</p>
+<canvas id="mon_canvas" width="1250" height="600"> 
+  Texte alternatif pour les navigateurs ne supportant pas Canvas.
+</canvas>
+
+</body>
+<script type="text/javascript">
+
+
+function mapChiffre(x, in_min,in_max, out_min, out_max)
+{
+  valeur= (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+  if (valeur<out_min){
+  valeur=out_min;
+  }
+  if (valeur>out_max){
+  valeur=out_max;
+  }
+return valeur;
+}
+
+var minVal=65000;
+var maxVal=0;
+
+var context = new AudioContext(),
+oscillator = context.createOscillator(); // Oscillator defaults to sine wave
+oscillator.connect(context.destination);
+oscillator.start();
+var started=1;
+var old=olivier2;
+
+function drawGraph(){
+var sdate;
+var olddate=Date.now();
+var difdate=Date.now();
+
+
+
+
+
+
+
+var c = document.getElementById("mon_canvas");
+var ctx = c.getContext("2d");
+
+ctx.shadowOffsetX = 2;
+  ctx.shadowOffsetY = 2;
+  ctx.shadowBlur = 2;
+  ctx.shadowColor = "rgba(0, 0, 0, 0.5)";
+xPos++;
+if (xPos>mon_canvas.width){
+xPos=0;
+//minVal=600;
+//maxVal=0;
+}
+if(olivier2<minVal){
+minVal=olivier2;
+}
+if(olivier2>maxVal){
+maxVal=olivier2;
+}
+
+olivier2=mapChiffre(olivier2,minVal,maxVal,0,mon_canvas.height);
+
+if(olivier2>mon_canvas.height/2){
+        if (started==0){
+                setTimeout(function() {
+oscillator.connect(context.destination);
+        }, 10);
+                started=1;
+                sdate=Date.now();
+                //console.log(sdate);
+                difdate=sdate-olddate;
+                olddate=sdate;
+                //console.log(difdate);
+        }
+}
+else{
+        if(started==1){
+ setTimeout(function() {
+oscillator.disconnect(context.destination);
+        }, 10);
+
+                started=0;
+        }
+}
+
+
+ctx.shadowOffsetX = 2;
+  ctx.shadowOffsetY = 2;
+  ctx.shadowBlur = 2;
+  ctx.shadowColor = "rgba(0, 0, 0, 0.5)";
+ctx.lineWidth = 1;
+ctx.strokeStyle = '#ffffff';
+ctx.beginPath();      // Début du chemin
+ctx.moveTo(xPos,mon_canvas.height);    // Le tracé part du point 50,50
+ctx.lineTo(xPos,0);  // Un segment est ajouté vers 200,200
+ctx.closePath();
+ctx.stroke();
+
+ctx.lineWidth = 1;
+ctx.strokeStyle = '#FF0000';
+ctx.beginPath();      // Début du chemin
+ctx.moveTo(xPos-1,mon_canvas.height-old);    // Le tracé part du point 50,50
+ctx.lineTo(xPos,mon_canvas.height-olivier2);  // Un segment est ajouté vers 200,200
+ctx.closePath();      // Fermeture du chemin (facultative)
+ctx.stroke();
+
+
+old=olivier2;
+};
+
+</script>
+</html>
