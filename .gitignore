@@ -16,7 +16,7 @@ local.properties
 .settings/
 .loadpath
 vnode_modules/*
-
+node_modules/*
 # External tool builders
 .externalToolBuilders/
 
