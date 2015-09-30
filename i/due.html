@@ -43,7 +43,7 @@ var maxVal=0;
 
 var context = new AudioContext(),
 oscillator = context.createOscillator(); // Oscillator defaults to sine wave
-oscillator.connect(context.destination);
+//oscillator.connect(context.destination);
 oscillator.start();
 var started=1;
 var old=olivier2;
@@ -84,7 +84,7 @@ olivier2=mapChiffre(olivier2,minVal,maxVal,0,mon_canvas.height);
 if(olivier2>mon_canvas.height/2){
         if (started==0){
                 setTimeout(function() {
-oscillator.connect(context.destination);
+//oscillator.connect(context.destination);
         }, 10);
                 started=1;
                 sdate=Date.now();
@@ -97,7 +97,7 @@ oscillator.connect(context.destination);
 else{
         if(started==1){
  setTimeout(function() {
-oscillator.disconnect(context.destination);
+//oscillator.disconnect(context.destination);
         }, 10);
 
                 started=0;
